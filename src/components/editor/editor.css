@@ -1,0 +1,77 @@
+.editor-wrapper {
+	width: 100%;
+	border: none;
+	background: #fff;
+	padding: 1rem;
+	/* box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px; */
+}
+
+.editor-container {
+	width: 100%;
+	min-height: 60vh;
+	border: 1px solid #dedede;
+	padding: 1rem;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.toolbar-grid {
+	display: flex;
+	flex-wrap: wrap;
+	flex-basis: 1fr 1fr;
+	padding: 1rem;
+}
+
+button {
+	margin-right: 8px;
+	font-size: 1rem;
+	padding: 10px;
+	border: none;
+	background: #fff;
+	cursor: pointer;
+}
+
+.superFancyBlockquote {
+	color: #999;
+	background: #fff;
+	font-family: "Hoefler Text", Georgia, serif;
+	font-style: italic;
+	border-left: 2px solid #999;
+	padding-left: 10px;
+}
+
+.codeBlock {
+	font-family: fira-code, monospace;
+	font-size: inherit;
+	background: #ffeff0;
+	font-style: italic;
+	word-wrap: normal;
+	word-wrap: break-word;
+	box-decoration-break: slice;
+	padding: 0.3rem 2rem;
+	border-radius: 0.2rem;
+}
+
+.leftAlign {
+	text-align: left;
+}
+.rightAlign {
+	text-align: right;
+}
+.centerAlign {
+	text-align: center;
+}
+.justifyAlign {
+	text-align: justify;
+}
+
+.public-DraftStyleDefault-unorderedListItem {
+	margin-left: 20px;
+}
+
+.public-DraftStyleDefault-orderedListItem {
+	margin-left: 20px;
+}
+
+.public-DraftEditorPlaceholder-inner {
+	color: #a9a9a9 !important;
+}
