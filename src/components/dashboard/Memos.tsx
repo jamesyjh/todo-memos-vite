@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import MemoCard from "./MemoCard";
-import { SectionContainer, SectionTitle, MemoGrid } from "./styles";
+import { SectionContainer, SectionHeader, MemoGrid } from "./styles";
 import { gsap } from "gsap";
 import Flip from "gsap/Flip";
-import styled from "styled-components";
 
-import { VscNewFile } from "react-icons/vsc";
+import { TbNewSection, TbPinFilled } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { addMemo, setLastSeen } from "../../redux/slices/memos";
 import { Button, ButtonContainer } from "../common/Button";
+import Icon from "../common/Icon";
 
 gsap.registerPlugin(Flip);
 
@@ -27,6 +27,10 @@ const Memos = () => {
 
 	const handleAddMemo = () => {
 		dispatch(addMemo());
+	};
+
+	const handleViewPinnedMemos = () => {
+		//TODO: write logic for this
 	};
 
 	useEffect(() => {
@@ -54,9 +58,12 @@ const Memos = () => {
 			<SectionHeader>
 				<ButtonContainer>
 					<Button onClick={handleAddMemo}>
-						<AddButton size={40} />
+						<Icon element={<TbNewSection size={25} />} />
 					</Button>
-					<Button>View All</Button>
+					<Button onClick={handleViewPinnedMemos}>
+						<Icon element={<TbPinFilled size={25} />} />
+					</Button>
+					{/* <Button>View All</Button> */}
 				</ButtonContainer>
 			</SectionHeader>
 			<MemoGrid>
@@ -69,18 +76,3 @@ const Memos = () => {
 };
 
 export default Memos;
-
-const SectionHeader = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
-`;
-
-const ViewMoreButton = styled.button``;
-
-const AddButton = styled(VscNewFile)`
-	display: flex;
-	justify-content: center;
-	color: #292929;
-	padding: 5px;
-`;

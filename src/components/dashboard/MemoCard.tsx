@@ -37,7 +37,6 @@ const MemoCard = ({ title, id, color, contentState, handleCardSelect }) => {
 
 	const handleColorSelect = (colorKey: string) => {
 		dispatch(setColor({ id, color: colorKey }));
-		console.log(memoCardRef.current);
 		toggleMenu();
 	};
 
