@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { TbNewSection } from "react-icons/tb";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { createBoard } from "../../redux/slices/boards";
 import { RootState } from "../../redux/store";
@@ -17,13 +16,14 @@ const Boards = () => {
 	const { boards } = useSelector((state: RootState) => state.boards);
 
 	const handleAddMemo = () => {
-		console.log("add new board!");
 		dispatch(createBoard());
 	};
 
 	const handleViewFavoriteBoards = () => {
+		//TODO: add logic to filter by favorites
 		console.log("view favorite boards!");
 	};
+
 	return (
 		<SectionContainer>
 			<SectionHeader>
