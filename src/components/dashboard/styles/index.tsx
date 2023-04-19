@@ -11,6 +11,12 @@ export const SectionContainer = styled.section`
 	margin: 1.25rem;
 `;
 
+export const SectionHeader = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+`;
+
 export const SectionTitle = styled.h1`
 	font-size: 2.5rem;
 `;
@@ -34,4 +40,22 @@ export const MemoGrid = styled.div`
 	grid-template-columns: repeat(6, 1fr);
 	grid-gap: 2rem;
 	margin: 1rem 20rem;
+`;
+
+export const ActionsContainer = styled.div`
+	position: absolute;
+	left: 18px;
+	top: 18px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	justify-content: flex-start;
+	z-index: 999;
+
+	> svg {
+		&:hover {
+			color: #58ff9d;
+			transition: all 200ms ease-in;
+		}
+	}
 `;

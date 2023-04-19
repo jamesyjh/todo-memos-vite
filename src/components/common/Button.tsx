@@ -25,7 +25,7 @@ export const Button = styled.button`
 	outline: none;
 	padding: 0.55rem;
 	text-decoration: none;
-	transition: all 235ms ease-in-out;
+	transition: all 170ms ease-in-out;
 	border-bottom-left-radius: 15px 255px;
 	border-bottom-right-radius: 225px 15px;
 	border-top-left-radius: 255px 15px;
@@ -38,8 +38,20 @@ export const Button = styled.button`
 
 	&:hover {
 		box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px -5px;
-		transform: translate3d(0, 2px, 0);
+		transform: translate3d(0, 1px, 0);
+		color: #898989;
+
+		border-bottom-left-radius: 35px 255px;
+		border-bottom-right-radius: 225px 35px;
+		border-top-left-radius: 255px 35px;
+		border-top-right-radius: 35px 225px;
 	}
+
+	&:hover > i {
+		color: #898989;
+		transition: all 235ms ease-in-out;
+	}
+
 	&:focus {
 		box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 4px -6px;
 	}
@@ -50,4 +62,5 @@ export const ButtonContainer = styled.div`
 	flex-direction: row;
 	align-self: flex-end;
 	gap: 0.5rem;
+	z-index: 999;
 `;
