@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { TbNewSection } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createBoard } from "../../redux/slices/boards";
 import { RootState } from "../../redux/store";
 import { Button, ButtonContainer } from "../common/Button";
