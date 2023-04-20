@@ -21,12 +21,17 @@ const initialState = {
 		},
 	},
 	editing: "",
+	active: "",
 };
 
 export const slice = createSlice({
 	name: "boards",
 	initialState,
 	reducers: {
+		setActiveBoard: (state, action) => {
+			const { boardId } = action.payload;
+			state.active = boardId;
+		},
 		createBoard: (state) => {
 			const id = `b-${uuid.generate()}`;
 			//TODO: handle switch to edit mode here
@@ -66,9 +71,21 @@ export const slice = createSlice({
 			state.boards[boardId].name = updatedName;
 			state.editing = "";
 		},
+		setEditing: (state, action) => {
+			const { boardId } = action.payload;
+			state.editing = boardId;
+		},
 	},
 });
 
-export const { createBoard, removeBoard, addListToBoard, removeListFromBoard, updateBoard } = slice.actions;
+export const {
+	setActiveBoard,
+	createBoard,
+	removeBoard,
+	addListToBoard,
+	removeListFromBoard,
+	updateBoard,
+	setEditing,
+} = slice.actions;
 
 export default slice.reducer;

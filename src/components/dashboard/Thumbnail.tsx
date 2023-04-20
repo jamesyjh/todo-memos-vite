@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaRegTrashAlt, FaStar, FaSave } from "react-icons/fa";
+import { FaRegTrashAlt, FaStar, FaSave, FaEdit } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { removeBoard, updateBoard } from "../../redux/slices/boards";
+import { removeBoard, setEditing, updateBoard } from "../../redux/slices/boards";
 import { RootState } from "../../redux/store";
 
 const Thumbnail = ({ id, name, image }) => {
@@ -24,7 +24,7 @@ const Thumbnail = ({ id, name, image }) => {
 		dispatch(removeBoard({ boardId: id }));
 	};
 
-	const handleSaveBoard = () => {
+	const handleUpdateBoardThumbnail = () => {
 		dispatch(updateBoard({ boardId: id, updatedName }));
 	};
 
@@ -37,12 +37,20 @@ const Thumbnail = ({ id, name, image }) => {
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setUpdatedName(e.target.value);
 	};
+
+	const handleEditBoardThumbnail = () => {
+		dispatch(setEditing({ boardId: id }));
+	};
+
+	const handleEditThumbnailImage = () => {};
+
 	return (
 		<ThumbnailContainer isEditing={isEditing} image={image} onClick={handleInputFocus} ref={newThumbnailRef}>
 			<ActionsContainer onClick={(e) => e.stopPropagation()}>
 				<FaRegTrashAlt id="delete" onClick={handleDeleteBoard} size={20} />
 				<FaStar id="favorite" onClick={() => console.log("add to favorites!")} size={20} />
-				{isEditing ? <FaSave id="save" onClick={handleSaveBoard} size={20} /> : null}
+				{isEditing ? <FaSave id="save" onClick={handleUpdateBoardThumbnail} size={20} /> : null}
+				{isEditing ? null : <FaEdit size={20} onClick={handleEditBoardThumbnail} />}
 			</ActionsContainer>
 			<Overlay />
 			{isEditing ? (
@@ -90,7 +98,7 @@ const ThumbnailContainer = styled.div`
 	display: flex;
 	padding: 1.5rem;
 	color: #fefefe;
-	transition: all 0.3s ease;
+	transition: all 150ms ease;
 	width: 10.75rem;
 	height: 8.75rem;
 	border-radius: 1rem;
