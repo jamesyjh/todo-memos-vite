@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import MemoCard from "./MemoCard";
+import MemoCard, { MemoCardProps } from "./MemoCard";
 import { SectionContainer, SectionHeader, MemoGrid } from "./styles";
 import { gsap } from "gsap";
 import Flip from "gsap/Flip";
@@ -20,16 +20,16 @@ const Memos = () => {
 
 	const [activeCard, setActiveCard] = useState(lastSeen);
 
-	const handleCardSelect = (index) => {
+	const handleCardSelect = (index: number): void => {
 		dispatch(setLastSeen({ index }));
 		setActiveCard(index);
 	};
 
-	const handleAddMemo = () => {
+	const handleAddMemo = (): void => {
 		dispatch(addMemo());
 	};
 
-	const handleViewPinnedMemos = () => {
+	const handleViewPinnedMemos = (): void => {
 		//TODO: write logic for this
 	};
 
@@ -67,7 +67,7 @@ const Memos = () => {
 				</ButtonContainer>
 			</SectionHeader>
 			<MemoGrid>
-				{items.map((item, index) => (
+				{items.map((item: MemoCardProps, index: number) => (
 					<MemoCard key={index} {...item} handleCardSelect={() => handleCardSelect(index)} />
 				))}
 			</MemoGrid>

@@ -1,17 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { Button, ButtonContainer } from "../common/Button";
-import { stateToHTML } from "draft-js-export-html";
-import { convertFromRaw } from "draft-js";
-import htmlParser from "react-html-parser";
 import { useDispatch } from "react-redux";
-import { removeMemo, setColor } from "../../redux/slices/memos";
+import styled from "styled-components";
+import { stateToHTML } from "draft-js-export-html";
+import { convertFromRaw, RawDraftContentState } from "draft-js";
+import htmlParser from "react-html-parser";
 import { MdOutlineFormatColorFill, MdClose } from "react-icons/md";
 import ExpandingMenu from "../common/ExpandingMenu";
-import { colorMap } from "../../utils";
+import { Button, ButtonContainer } from "../common/Button";
+import { setColor, removeMemo } from "../../redux/slices/memos";
+import { colorMap, ColorMapKey } from "../../utils";
 
-const MemoCard = ({ title, id, color, contentState, handleCardSelect }) => {
+export interface MemoCardProps {
+	title: string;
+	id: string;
+	color: ColorMapKey;
+	contentState: RawDraftContentState;
+	handleCardSelect: () => void;
+}
+
+const MemoCard = ({ title, id, color, contentState, handleCardSelect }: MemoCardProps) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -35,14 +43,19 @@ const MemoCard = ({ title, id, color, contentState, handleCardSelect }) => {
 
 	const toggleMenu = () => setIsMenuOpen((prevState) => !prevState);
 
-	const handleColorSelect = (colorKey: string) => {
+	const handleColorSelect = (colorKey: ColorMapKey) => {
 		dispatch(setColor({ id, color: colorKey }));
 		toggleMenu();
 	};
 
 	return (
 		<>
-			<MemoCardContainer ref={memoCardRef} color={colorMap[color]} className="memo-card" onClick={handleCardSelect}>
+			<MemoCardContainer
+				ref={memoCardRef}
+				color={colorMap[color as ColorMapKey]}
+				className="memo-card"
+				onClick={handleCardSelect}
+			>
 				<MemoCardHeader>
 					<h2>{title}</h2>
 					<Button ref={buttonRef} onClick={toggleMenu}>

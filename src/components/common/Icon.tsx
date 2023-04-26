@@ -1,9 +1,13 @@
-import React from "react";
+import { ReactElement } from "react";
 import { IconType } from "react-icons";
 import styled from "styled-components";
 
 interface IconButtonProps {
-	element: React.ReactElement<IconType>;
+	element: ReactElement<IconType>;
+}
+
+interface IconContainerProps {
+	icon: ReactElement<IconType>;
 }
 
 const Icon = ({ element }: IconButtonProps) => {
@@ -12,7 +16,7 @@ const Icon = ({ element }: IconButtonProps) => {
 
 export default Icon;
 
-const IconContainer = styled.i`
+const IconContainer = styled.i<IconContainerProps>`
 	display: flex;
 	justify-content: center;
 	color: #292929;

@@ -17,3 +17,14 @@ export const colorMap = {
 	blue: colors.BLUE,
 	default: colors.DEFAULT,
 };
+
+export type ColorMap = {
+	yellow: string;
+	green: string;
+	pink: string;
+	purple: string;
+	blue: string;
+	default: string;
+};
+
+export type ColorMapKey = keyof ColorMap;

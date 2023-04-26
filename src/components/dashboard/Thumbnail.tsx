@@ -2,47 +2,58 @@ import React, { useEffect, useRef, useState } from "react";
 import { FaRegTrashAlt, FaStar, FaSave, FaEdit } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import styled, { keyframes } from "styled-components";
-import { removeBoard, setEditing, updateBoard } from "../../redux/slices/boards";
+import { removeBoard, setEditing, updateBoard } from "../../redux/slices/kanban/boards";
 import { RootState } from "../../redux/store";
 
-const Thumbnail = ({ id, name, image }) => {
+interface ThumbnailProps {
+	id: string;
+	name: string;
+	image: string;
+}
+
+interface ThumbnailContainerProps {
+	isEditing: boolean;
+	image: string;
+}
+
+const Thumbnail = ({ id, name, image }: ThumbnailProps) => {
 	const dispatch = useDispatch();
-	const inputRef = useRef(null);
-	const newThumbnailRef = useRef(null);
+	const inputRef = useRef<HTMLInputElement>(null);
+	const newThumbnailRef = useRef<HTMLDivElement>(null);
 	const { editing } = useSelector((state: RootState) => state.boards);
 	const [updatedName, setUpdatedName] = useState(name);
 	const isEditing = editing === id;
 
 	useEffect(() => {
 		if (isEditing) {
-			inputRef.current.focus();
-			newThumbnailRef.current.classList.add("bounce");
+			inputRef.current?.focus();
+			newThumbnailRef.current?.classList.add("bounce");
 		}
 	}, [inputRef, newThumbnailRef]);
 
-	const handleDeleteBoard = () => {
-		dispatch(removeBoard({ boardId: id }));
+	const handleDeleteBoard = (): void => {
+		dispatch(removeBoard({ boardId: id } as any));
 	};
 
-	const handleUpdateBoardThumbnail = () => {
+	const handleUpdateBoardThumbnail = (): void => {
 		dispatch(updateBoard({ boardId: id, updatedName }));
 	};
 
-	const handleInputFocus = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleInputFocus = (e: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
 		if (isEditing) {
 			e.stopPropagation();
 		}
 	};
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		setUpdatedName(e.target.value);
 	};
 
-	const handleEditBoardThumbnail = () => {
+	const handleEditBoardThumbnail = (): void => {
 		dispatch(setEditing({ boardId: id }));
 	};
 
-	const handleEditThumbnailImage = () => {};
+	const handleEditThumbnailImage = (): void => {};
 
 	return (
 		<ThumbnailContainer isEditing={isEditing} image={image} onClick={handleInputFocus} ref={newThumbnailRef}>
@@ -90,7 +101,7 @@ const wiggle = keyframes`
   }
 `;
 
-const ThumbnailContainer = styled.div`
+const ThumbnailContainer = styled.div<ThumbnailContainerProps>`
 	position: relative;
 	background: url(${(props) => props.image});
 	background-size: cover;
@@ -180,8 +191,8 @@ const ActionsContainer = styled.div`
 
 	> svg {
 		&:hover {
-			color: #58ff9d;
-			transition: all 200ms ease-in;
+			color: #7bd3ff;
+			transition: all 200ms ease-out;
 		}
 	}
 `;

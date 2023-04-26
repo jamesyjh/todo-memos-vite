@@ -1,18 +1,21 @@
-import React, { useState } from "react";
 import styled from "styled-components";
-import { colorMap } from "../../utils";
+import { colorMap, ColorMapKey } from "../../utils";
 
-const ExpandingMenu = ({ handleColorSelect }) => {
+interface ExpandingMenuProps {
+	handleColorSelect: (key: ColorMapKey) => void;
+}
+
+const ExpandingMenu = ({ handleColorSelect }: ExpandingMenuProps) => {
 	return (
 		<Menu className="expanding-menu">
 			{Object.keys(colorMap).map((key) => {
 				return (
 					<MenuItem
 						key={key}
-						onClick={() => handleColorSelect(key)}
+						onClick={() => handleColorSelect(key as ColorMapKey)}
 						style={{
 							border: `1px solid black`,
-							background: `${colorMap[key]}`,
+							background: `${colorMap[key as ColorMapKey]}`,
 						}}
 					></MenuItem>
 				);

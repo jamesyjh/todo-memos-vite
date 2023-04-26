@@ -2,7 +2,7 @@ import { FaStar } from "react-icons/fa";
 import { TbNewSection } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createBoard } from "../../redux/slices/boards";
+import { createBoard } from "../../redux/slices/kanban/boards";
 import { RootState } from "../../redux/store";
 import { Button, ButtonContainer } from "../common/Button";
 import Icon from "../common/Icon";
