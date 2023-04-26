@@ -1,6 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
 import * as R from "ramda";
+import { AnyAction, createSlice } from "@reduxjs/toolkit";
 import uuid from "short-uuid";
+import { AppDispatch, RootState } from "../../../store";
+import { sortCards } from "../lists";
 
 const initialState = {
 	boards: {
@@ -48,7 +50,7 @@ export const slice = createSlice({
 
 			state.boards = R.mergeRight(state.boards, newBoard);
 		},
-		removeBoard: (state, action) => {
+		removeBoard: (state = initialState, action: AnyAction) => {
 			const { boardId } = action.payload;
 			if (boardId in state.boards) {
 				delete state.boards[boardId];
@@ -56,13 +58,13 @@ export const slice = createSlice({
 		},
 		addListToBoard: (state, action) => {
 			const { boardId, listId } = action.payload;
-			const board = state[boardId];
-			const updatedLists = R.concat(board.lists, `list-${listId}`);
+			const board = state.boards[boardId];
+			const updatedLists = R.concat(board.lists, [listId]);
 			board.lists = updatedLists;
 		},
 		removeListFromBoard: (state, action) => {
 			const { boardId, listId } = action.payload;
-			const board = state[boardId];
+			const board = state.boards[boardId];
 			const updatedLists = board.lists.filter((id) => id !== listId);
 			board.lists = updatedLists;
 		},
@@ -75,6 +77,17 @@ export const slice = createSlice({
 			const { boardId } = action.payload;
 			state.editing = boardId;
 		},
+		sortList: (state, action) => {
+			const { boardId, type, droppableIndexStart, droppableIndexEnd } = action.payload;
+			const board = state.boards[boardId];
+			const lists = board.lists;
+
+			const pulledOutList = lists.splice(droppableIndexStart, 1);
+			lists.splice(droppableIndexEnd, 0, ...pulledOutList);
+			board.lists = lists;
+
+			state.boards = R.mergeDeepRight(state.boards, { [boardId]: board });
+		},
 	},
 });
 
@@ -86,6 +99,21 @@ export const {
 	removeListFromBoard,
 	updateBoard,
 	setEditing,
+	sortList,
 } = slice.actions;
 
 export default slice.reducer;
+
+export const rearrange =
+	({ boardId, droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId, type }) =>
+	async (dispatch: AppDispatch, getState: () => RootState) => {
+		if (type === "list") {
+			dispatch(slice.actions.sortList({ boardId, type, droppableIndexStart, droppableIndexEnd }));
+		}
+
+		if (type === "card") {
+			dispatch(
+				sortCards({ droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId, type })
+			);
+		}
+	};

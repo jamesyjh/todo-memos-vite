@@ -4,9 +4,9 @@ import storage from "redux-persist/lib/storage";
 
 // slices
 import appReducer from "./slices/app";
-import boardsReducer from "./slices/boards";
-import cardsReducer from "./slices/boards/cards";
-import listsReducer from "./slices/boards/lists";
+import boardsReducer from "./slices/kanban/boards";
+import cardsReducer from "./slices/kanban/cards";
+import listsReducer from "./slices/kanban/lists";
 import memosReducer from "./slices/memos";
 
 // ----------------------------------------------------------------------
