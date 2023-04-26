@@ -1,11 +1,15 @@
-import "./global.css";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Boards from "./components/dashboard/Boards";
-import Board from "./pages/Board";
-import Memos from "./components/dashboard/Memos";
+import "./global.css";
+
+// pages
+import Dashboard from "./pages/dashboard";
+import Board from "./pages/board";
 import Memo from "./pages/Memo";
 import NotFound from "./pages/NotFound";
+
+// components
+import Boards from "./components/dashboard/Boards";
+import Memos from "./components/dashboard/Memos";
 
 export const App = () => {
 	return (
