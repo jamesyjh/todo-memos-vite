@@ -62,8 +62,6 @@ export const TitleContainer = styled.div`
 
 export const MenuContainer = styled.div`
 	position: relative;
-	/* display: flex;
-	justify-content: flex-end; */
 `;
 
 export const StyledInput = styled.input`
@@ -75,21 +73,8 @@ export const StyledInput = styled.input`
 	padding: 5px;
 `;
 
-// const DeleteButton = styled(Icon)`
-// 	cursor: pointer;
-// 	transition: opacity 0.3s ease-in-out;
-// 	opacity: 0.4;
-// 	&:hover {
-// 		opacity: 0.8;
-// 	}
-// `;
-
 export const ListTitle = styled.h3`
 	font-weight: bold;
-
-	/* ${TitleContainer}:hover & {
-		border: 4px dotted #c9c9c9;
-	} */
 `;
 
 export const CreateListContainer = styled.div`
@@ -97,12 +82,14 @@ export const CreateListContainer = styled.div`
 	align-items: center;
 	cursor: pointer;
 	width: 300px;
-	background-color: transparent;
+	backdrop-filter: blur(4px); /* Add background blur effect */
+	background-color: rgba(255, 255, 255, 0.35); /* Add a semi-transparent red color overlay */
 	border: 4px dotted #c9c9c9;
 	border-radius: 5px;
 	padding: 1rem;
 	height: 100%;
 	transition: all 150ms ease-out;
+	font-weight: bolder;
 
 	> span {
 		display: flex;
@@ -111,10 +98,10 @@ export const CreateListContainer = styled.div`
 	}
 
 	&:hover {
-		background-color: rgba(0, 0, 0, 0.08);
+		background-color: rgba(255, 255, 255, 0.45); /* Add a semi-transparent red color overlay */
 	}
 	&:active {
-		background-color: rgba(0, 0, 0, 0.15);
+		background-color: rgba(255, 255, 255, 0.55); /* Add a semi-transparent red color overlay */
 	}
 `;
 
