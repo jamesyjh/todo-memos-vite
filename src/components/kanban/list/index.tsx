@@ -16,14 +16,11 @@ import CreateCard from "../card/createCard";
 import ColorPicker from "./colorMenu";
 import { useDispatch } from "react-redux";
 import { IoMdSettings } from "react-icons/io";
-import {
-	DropdownMenu,
-	DropdownMenuCategoryHeader,
-	DropdownMenuItem,
-	DropdownSubMenuCategoryHeader,
-} from "../../common/DropdownMenu";
+import { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/DropdownMenu";
+import DropdownMenuItem from "../../common/DropdownMenuItem";
+import DropdownMenu from "../../common/DropdownMenu";
 import { FaChevronLeft } from "react-icons/fa";
-import { setListColor } from "../../../redux/slices/kanban/lists";
+import { removeList, setListColor, updateListTitle } from "../../../redux/slices/kanban/lists";
 
 interface KanbanListProps {
 	listId: string;
@@ -42,9 +39,12 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
 	const [listTitle, setListTitle] = useState(title);
 	const [menuStack, setMenuStack] = useState<string[]>([]);
 
-	const handleFinishEditing = () => {
+	const handleFinishEditing = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		dispatch(updateListTitle({ listId, listTitle }));
 		setIsEditing(false);
 	};
+
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		setListTitle(e.target.value);
 	};
@@ -68,12 +68,11 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
 	};
 
 	const handleColorChange = (pickedColor: string) => {
-		console.log(pickedColor);
 		dispatch(setListColor({ updatedColor: pickedColor, listId }));
 	};
 
 	const handleRemoveList = () => {
-		console.log("removing this list");
+		dispatch(removeList(listId));
 		setIsDropdownOpen(false);
 	};
 
@@ -119,15 +118,17 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
 
 										<MenuContainer ref={menuRef}>
 											{isDropdownOpen && (
-												<DropdownMenu>
+												<DropdownMenu position={{ top: -20, right: -200 }}>
 													{menuStack.length === 0 ? (
 														<>
 															<DropdownMenuCategoryHeader>
 																<span>List Actions</span>
 															</DropdownMenuCategoryHeader>
 															<hr />
-															<DropdownMenuItem onClick={handleRemoveList}>Remove List</DropdownMenuItem>
-															<DropdownMenuItem onClick={(e) => handleMenuNav(e, "Choose List Color")}>
+															<DropdownMenuItem handleClick={handleRemoveList} requiresConfirmation>
+																Remove List
+															</DropdownMenuItem>
+															<DropdownMenuItem handleClick={(e) => handleMenuNav(e, "Choose List Color")}>
 																Set Color
 															</DropdownMenuItem>
 														</>

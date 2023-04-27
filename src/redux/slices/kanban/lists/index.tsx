@@ -2,7 +2,7 @@ import * as R from "ramda";
 import uuid from "short-uuid";
 import { createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../../store";
-import { addListToBoard } from "../boards";
+import { addListToBoard, removeListFromBoard } from "../boards";
 
 const initialState = {
 	lists: {
@@ -29,6 +29,16 @@ export const slice = createSlice({
 			const updatedLists = R.concat(list.cards, [cardId]);
 			list.cards = updatedLists;
 		},
+		updateListTitle: (state, action) => {
+			const { listId, listTitle } = action.payload;
+			state.lists[listId].title = listTitle;
+		},
+		removeCardFromList: (state, action) => {
+			const { cardId, listId } = action.payload;
+			const list = state.lists[listId];
+			const updatedCards = list.cards.filter((id) => id !== cardId);
+			list.cards = updatedCards;
+		},
 		sortCards: (state, action) => {
 			const { droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd } = action.payload;
 			// same list
@@ -47,14 +57,17 @@ export const slice = createSlice({
 		},
 		setListColor: (state, action) => {
 			const { updatedColor, listId } = action.payload;
-			console.log(updatedColor, listId);
 			const list = state.lists[listId];
 			list.color = updatedColor;
+		},
+		deleteList: (state, action) => {
+			const { listId } = action.payload;
+			delete state.lists[listId];
 		},
 	},
 });
 
-export const { addCardToList, sortCards, setListColor } = slice.actions;
+export const { addCardToList, sortCards, setListColor, removeCardFromList, updateListTitle } = slice.actions;
 
 export default slice.reducer;
 
@@ -74,4 +87,10 @@ export const createList = (title: string) => async (dispatch: AppDispatch, getSt
 	dispatch(slice.actions.addList({ newList }));
 
 	dispatch(addListToBoard({ boardId: activeBoard, listId: id }));
+};
+
+export const removeList = (listId: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
+	const activeBoard = getState().boards.active;
+	dispatch(removeListFromBoard({ boardId: activeBoard, listId }));
+	dispatch(slice.actions.deleteList({ listId }));
 };
