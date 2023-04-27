@@ -1,17 +1,28 @@
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import KanbanList from "../list";
 import CreateList from "../list/createList";
-import { ListsContainer } from "./styles";
+import { BoardActionsContainer, ListsContainer } from "./styles";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { rearrange } from "../../../redux/slices/kanban/boards";
+import { rearrange, updateBoardImage } from "../../../redux/slices/kanban/boards";
 import { Button, ButtonContainer } from "../../common/Button";
 import { FaChevronLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { CgMoreVerticalAlt } from "react-icons/cg";
+import { ActionsContainer, MenuContainer } from "../list/styles";
+import { useRef, useState } from "react";
+import DropdownMenu, { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/DropdownMenu";
+import DropdownMenuItem from "../../common/DropdownMenuItem";
+
+import ImagePicker from "./imageMenu";
 
 const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const menuRef = useRef<HTMLDivElement>(null);
+
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [menuStack, setMenuStack] = useState<string[]>([]);
 
 	const handleDragEnd = (result: DropResult): void => {
 		const { destination, source, draggableId, type } = result;
@@ -32,6 +43,28 @@ const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
 			})
 		);
 	};
+
+	const handleMenuNav = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, subMenuTitle: string): void => {
+		e.stopPropagation();
+		setMenuStack((prev) => [...prev, subMenuTitle]);
+	};
+
+	const handleBack = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		e.stopPropagation();
+		setMenuStack((prev) => prev.slice(0, -1));
+	};
+
+	const handleOpenBoardActions = (e) => {
+		e.stopPropagation();
+		setIsDropdownOpen(true);
+		setMenuStack([]);
+	};
+
+	const handleImageChange = (imageURL: string) => {
+		console.log(imageURL);
+		dispatch(updateBoardImage({ boardId, imageURL }));
+	};
+
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>
 			<BoardHeader>
@@ -41,7 +74,40 @@ const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
 					</Button>
 				</ButtonContainer>
 				<BoardTitle>{board.name}</BoardTitle>
+				<BoardActionsContainer onClick={handleOpenBoardActions}>
+					<CgMoreVerticalAlt size={20} />
+				</BoardActionsContainer>
 			</BoardHeader>
+			<MenuContainer ref={menuRef}>
+				{isDropdownOpen && (
+					<DropdownMenu position={{ top: 0, right: 1 }}>
+						{menuStack.length === 0 ? (
+							<>
+								<DropdownMenuCategoryHeader>
+									<span>Board Actions</span>
+								</DropdownMenuCategoryHeader>
+								<hr />
+								<DropdownMenuItem handleClick={(e) => handleMenuNav(e, "Background Image")}>
+									Change board image . . .
+								</DropdownMenuItem>
+							</>
+						) : (
+							<>
+								<DropdownSubMenuCategoryHeader>
+									<ActionsContainer onClick={handleBack}>
+										<FaChevronLeft size={11} />
+									</ActionsContainer>
+									<span>{menuStack[menuStack.length - 1]}</span>
+								</DropdownSubMenuCategoryHeader>
+								<hr />
+								{menuStack[menuStack.length - 1] === "Background Image" && (
+									<ImagePicker onImageChange={handleImageChange} currentImage={board.image} />
+								)}
+							</>
+						)}
+					</DropdownMenu>
+				)}
+			</MenuContainer>
 			<Droppable droppableId="all-lists" direction="horizontal" type="list">
 				{(provided) => (
 					<ListsContainer {...provided.droppableProps} ref={provided.innerRef}>
@@ -75,18 +141,33 @@ export default KanbanBoard;
 
 const BoardTitle = styled.h2`
 	font-weight: 900;
-	flex: 0.5;
-	width: 100%;
+	width: auto;
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.08);
+	padding: 10px;
+	border-radius: 10px;
 `;
 
 const BoardHeader = styled.header`
 	display: flex;
 	align-items: center;
-	padding: 5px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	margin-left: 10px;
+	padding: 0.75rem;
 	gap: 1rem;
+	backdrop-filter: blur(5px); /* Add background blur effect */
+	/* opacity: 0.1; */
+	color: #fefefe;
+	justify-content: space-between;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(255, 255, 255, 0.05);
+		z-index: -1; /* Set the overlay behind other content */
+	}
 
 	> ${ButtonContainer} {
 		> ${Button} {

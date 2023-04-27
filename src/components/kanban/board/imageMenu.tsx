@@ -1,36 +1,36 @@
 import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import styled from "styled-components";
-import { ActionsContainer } from "./styles";
+import { ActionsContainer } from "../list/styles";
 
-interface ColorMenuProps {
-	onColorChange: (color: string) => void;
-	currentColor: string;
+interface BoardImageMenuProps {
+	onImageChange: (image: string) => void;
+	currentImage: string;
 }
 
-const ColorMenu = ({ onColorChange, currentColor }: ColorMenuProps) => {
-	const [color, setColor] = useState(currentColor);
+const BoardImageMenu = ({ onImageChange, currentImage }: BoardImageMenuProps) => {
+	const [imageURL, setImageURL] = useState(currentImage);
 
-	const handleColorChange = () => {
-		onColorChange(color);
+	const handleImageChange = () => {
+		onImageChange(imageURL);
 	};
 
 	return (
-		<ColorMenuContainer>
-			<input type="color" value={color} onChange={(event) => setColor(event.target.value)} />
-			<ActionsContainer onClick={handleColorChange}>
+		<BoardImageMenuContainer>
+			<input type="text" value={imageURL} onChange={(event) => setImageURL(event.target.value)} />
+			<ActionsContainer onClick={handleImageChange}>
 				<div>
 					<FaCheckCircle size={20} />
 					<span>Save</span>
 				</div>
 			</ActionsContainer>
-		</ColorMenuContainer>
+		</BoardImageMenuContainer>
 	);
 };
 
-export default ColorMenu;
+export default BoardImageMenu;
 
-const ColorMenuContainer = styled.div`
+const BoardImageMenuContainer = styled.div`
 	display: flex;
 	padding: 8px 20px;
 	gap: 1.5rem;

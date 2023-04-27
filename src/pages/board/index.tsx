@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { Navigate, useParams } from "react-router-dom";
@@ -29,7 +29,7 @@ const MyBoard = () => {
 	const listOrder = board.lists;
 
 	return (
-		<BoardContainer>
+		<BoardContainer image={board.image}>
 			<KanbanBoard board={board} boardId={id} listOrder={listOrder} lists={lists} cards={cards} />
 		</BoardContainer>
 	);

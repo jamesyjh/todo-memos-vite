@@ -77,6 +77,11 @@ export const slice = createSlice({
 			const { boardId } = action.payload;
 			state.editing = boardId;
 		},
+		updateBoardImage: (state, action) => {
+			const { boardId, imageURL } = action.payload;
+			const board = state.boards[boardId];
+			board.image = imageURL;
+		},
 		sortList: (state, action) => {
 			const { boardId, type, droppableIndexStart, droppableIndexEnd } = action.payload;
 			const board = state.boards[boardId];
@@ -100,6 +105,7 @@ export const {
 	updateBoard,
 	setEditing,
 	sortList,
+	updateBoardImage,
 } = slice.actions;
 
 export default slice.reducer;

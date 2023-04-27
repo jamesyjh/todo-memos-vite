@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { ActionsContainer } from "../kanban/list/styles";
 
-export const DropdownMenu = styled.div`
+export const StyledDropdownMenu = styled.div`
 	position: absolute;
-	top: -10px;
-	right: -200px;
+	top: ${({ position }) => (position.top ? `${position.top}px` : "auto")};
+	bottom: ${({ position }) => (position.bottom ? `${position.bottom}px` : "auto")};
+	left: ${({ position }) => (position.left ? `${position.left}px` : "auto")};
+	right: ${({ position }) => (position.right ? `${position.right}px` : "auto")};
 	background: #fff;
 	border: 1px solid #ccc;
 	border-radius: 5px;
@@ -23,6 +25,12 @@ export const DropdownMenu = styled.div`
 	}
 `;
 
+const DropdownMenu = ({ children, position }) => {
+	return <StyledDropdownMenu position={position}>{children}</StyledDropdownMenu>;
+};
+
+export default DropdownMenu;
+
 export const DropdownMenuCategoryHeader = styled.div`
 	padding: 10px;
 	justify-content: center;
@@ -33,17 +41,6 @@ export const DropdownMenuCategoryHeader = styled.div`
 
 	> span {
 		font-weight: bold;
-	}
-`;
-
-export const DropdownMenuItem = styled.div`
-	font-size: 13px;
-	padding: 8px 20px;
-	cursor: pointer;
-	z-index: 9999;
-
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.1);
 	}
 `;
 
