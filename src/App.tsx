@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import "./globalThis.css";
+import "./global.css";
 
 // pages
 import Dashboard from "./pages/dashboard";
