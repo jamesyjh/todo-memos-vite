@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaRegTrashAlt, FaStar, FaSave, FaEdit } from "react-icons/fa";
-import { useSelector, useDispatch } from "react-redux";
+import { RxCheck, RxCross1 } from "react-icons/rx";
 import styled, { keyframes } from "styled-components";
-import { removeBoard, setEditing, updateBoard } from "../../redux/slices/kanban/boards";
-import { RootState } from "../../redux/store";
+import { updateFavorites, removeBoard, setEditing, updateBoard } from "../../redux/slices/kanban/boards";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { ConfirmActionContainer } from "../common/dropdown-menu/menuItem";
 
 interface ThumbnailProps {
 	id: string;
 	name: string;
 	image: string;
+	isStarred: boolean;
 }
 
 interface ThumbnailContainerProps {
@@ -16,12 +18,15 @@ interface ThumbnailContainerProps {
 	image: string;
 }
 
-const Thumbnail = ({ id, name, image }: ThumbnailProps) => {
-	const dispatch = useDispatch();
+const Thumbnail = ({ id, name, image, isStarred }: ThumbnailProps) => {
+	const dispatch = useAppDispatch();
 	const inputRef = useRef<HTMLInputElement>(null);
+	const menuRef = useRef<HTMLDivElement>(null);
 	const newThumbnailRef = useRef<HTMLDivElement>(null);
-	const { editing } = useSelector((state: RootState) => state.boards);
+
+	const { editing } = useAppSelector((state) => state.boards);
 	const [updatedName, setUpdatedName] = useState(name);
+	const [isConfirmingAction, setConfirmingAction] = useState(false);
 	const isEditing = editing === id;
 
 	useEffect(() => {
@@ -53,16 +58,39 @@ const Thumbnail = ({ id, name, image }: ThumbnailProps) => {
 		dispatch(setEditing({ boardId: id }));
 	};
 
-	const handleEditThumbnailImage = (): void => {};
+	const handleAddToFavorites = (): void => {
+		dispatch(updateFavorites({ boardId: id }));
+	};
 
 	return (
 		<ThumbnailContainer isEditing={isEditing} image={image} onClick={handleInputFocus} ref={newThumbnailRef}>
-			<ActionsContainer onClick={(e) => e.stopPropagation()}>
-				<FaRegTrashAlt id="delete" onClick={handleDeleteBoard} size={20} />
-				<FaStar id="favorite" onClick={() => console.log("add to favorites!")} size={20} />
+			<ThumbnailActionsContainer onClick={(e) => e.stopPropagation()}>
+				<FaRegTrashAlt
+					id="delete"
+					onClick={(e) => {
+						e.stopPropagation();
+						setConfirmingAction(true);
+					}}
+					size={20}
+				/>
+				{isConfirmingAction ? (
+					<ConfirmActionContainer ref={menuRef}>
+						<RxCheck id="confirm" size={28} onClick={handleDeleteBoard} />
+						<RxCross1
+							id="cancel"
+							size={28}
+							onClick={(e) => {
+								e.stopPropagation();
+								setConfirmingAction(false);
+							}}
+						/>
+					</ConfirmActionContainer>
+				) : null}
+
+				<FaStar id="favorite" onClick={handleAddToFavorites} size={20} color={isStarred ? "#ffce0c" : "#fff"} />
 				{isEditing ? <FaSave id="save" onClick={handleUpdateBoardThumbnail} size={20} /> : null}
 				{isEditing ? null : <FaEdit size={20} onClick={handleEditBoardThumbnail} />}
-			</ActionsContainer>
+			</ThumbnailActionsContainer>
 			<Overlay />
 			{isEditing ? (
 				<EditBoardInputContainer>
@@ -82,16 +110,16 @@ const wiggle = keyframes`
     transform: rotateZ(0);
   }
   15% {
-    transform: rotateZ(-10deg);
+    transform: rotateZ(-7deg);
   }
   20% {
-    transform: rotateZ(7deg);
+    transform: rotateZ(5deg);
   }
   25% {
-    transform: rotateZ(-8deg);
+    transform: rotateZ(-6deg);
   }
   30% {
-    transform: rotateZ(5deg);
+    transform: rotateZ(4deg);
   }
   35% {
     transform: rotateZ(-2deg);
@@ -103,9 +131,11 @@ const wiggle = keyframes`
 
 const ThumbnailContainer = styled.div<ThumbnailContainerProps>`
 	position: relative;
-	background: url(${(props) => props.image});
+	background: url(${(props) => props.image}) no-repeat center center;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
 	background-size: cover;
-	background-repeat: no-repeat;
 	display: flex;
 	padding: 1.5rem;
 	color: #fefefe;
@@ -128,7 +158,7 @@ const ThumbnailContainer = styled.div<ThumbnailContainerProps>`
 	}
 
 	&.bounce {
-		animation: ${wiggle} 800ms ease-in-out;
+		animation: ${wiggle} 800ms ease-out;
 		animation-iteration-count: 1;
 	}
 `;
@@ -179,7 +209,7 @@ const EditBoardInputContainer = styled.div`
 	}
 `;
 
-const ActionsContainer = styled.div`
+const ThumbnailActionsContainer = styled.div`
 	position: absolute;
 	left: 18px;
 	top: 18px;
@@ -188,6 +218,12 @@ const ActionsContainer = styled.div`
 	gap: 0.5rem;
 	justify-content: flex-start;
 	z-index: 999;
+
+	> ${ConfirmActionContainer} {
+		position: absolute;
+		right: -70px;
+		top: -3px;
+	}
 
 	> svg {
 		&:hover {

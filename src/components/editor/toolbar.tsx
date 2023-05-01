@@ -1,4 +1,5 @@
-import React from "react";
+import Draft, { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw, ContentBlock, Modifier } from "draft-js";
+
 import {
 	FaAlignCenter,
 	FaAlignLeft,
@@ -18,9 +19,14 @@ import {
 	FaTextWidth,
 	FaUnderline,
 } from "react-icons/fa";
-import { RichUtils } from "draft-js";
+import { Dispatch, SetStateAction } from "react";
 
-const Toolbar = ({ editorState, setEditorState }) => {
+interface EditorToolBarProps {
+	editorState: EditorState;
+	setEditorState: Dispatch<SetStateAction<EditorState>>;
+}
+
+const Toolbar = ({ editorState, setEditorState }: EditorToolBarProps) => {
 	const tools = [
 		{
 			label: "bold",
@@ -132,14 +138,14 @@ const Toolbar = ({ editorState, setEditorState }) => {
 		{ label: "H6", style: "header-six", method: "block" },
 	];
 
-	const applyStyle = (e, style, method) => {
+	const applyStyle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, style: string, method: string) => {
 		e.preventDefault();
 		method === "block"
 			? setEditorState(RichUtils.toggleBlockType(editorState, style))
 			: setEditorState(RichUtils.toggleInlineStyle(editorState, style));
 	};
 
-	const isActive = (style, method) => {
+	const isActive = (style: string, method: string) => {
 		if (method === "block") {
 			const selection = editorState.getSelection();
 			const blockType = editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType();

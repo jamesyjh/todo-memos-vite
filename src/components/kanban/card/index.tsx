@@ -5,22 +5,26 @@ import { CgMoreVerticalAlt } from "react-icons/cg";
 import styled from "styled-components";
 import { CardContainer, CardForm, CardFormContainer, StyledInput } from "./styles";
 import Card from "../../common/Card";
-import { useDispatch } from "react-redux";
-import { ActionsContainer, MenuContainer } from "../list/styles";
-import { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/DropdownMenu";
-import DropdownMenuItem from "../../common/DropdownMenuItem";
-import DropdownMenu from "../../common/DropdownMenu";
-import { removeCard, updateCardTitle } from "../../../redux/slices/kanban/cards";
+import { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/dropdown-menu";
+import DropdownMenuItem from "../../common/dropdown-menu/menuItem";
+import DropdownMenu from "../../common/dropdown-menu";
+import { removeCard, updateCardColor, updateCardTitle } from "../../../redux/slices/kanban/cards";
+import { MenuContainer } from "../../common/dropdown-menu/styles";
+import { ActionsContainer } from "../../common/ActionsContainer";
+import { IoMdClose } from "react-icons/io";
+import { useAppDispatch } from "../../../redux/store";
+import ColorPicker from "../../menus/cardColorSettings";
 
-interface KanbanCardProps {
+export interface KanbanCardProps {
 	index: number;
 	listId: string;
 	cardId: string;
 	title: string;
+	color: string;
 }
 
-const KanbanCard = ({ index, listId, cardId, title }: KanbanCardProps) => {
-	const dispatch = useDispatch();
+const KanbanCard = ({ index, listId, cardId, title, color }: KanbanCardProps) => {
+	const dispatch = useAppDispatch();
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -28,7 +32,7 @@ const KanbanCard = ({ index, listId, cardId, title }: KanbanCardProps) => {
 	const [cardTitle, setCardTitle] = useState(title);
 	const [menuStack, setMenuStack] = useState<string[]>([]);
 
-	const handleFinishEditing = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleFinishEditing = (e: React.FocusEvent<HTMLInputElement> | React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		dispatch(updateCardTitle({ cardId, cardTitle }));
 		setIsEditing(false);
@@ -38,7 +42,10 @@ const KanbanCard = ({ index, listId, cardId, title }: KanbanCardProps) => {
 		setCardTitle(e.target.value);
 	};
 
-	const handleFocus = () => {};
+	const handleFocus = (e: React.FormEvent<HTMLInputElement>) => {
+		const target = e.target as HTMLInputElement;
+		target.select();
+	};
 
 	const handleOpenCardActions = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		e.stopPropagation();
@@ -62,7 +69,16 @@ const KanbanCard = ({ index, listId, cardId, title }: KanbanCardProps) => {
 		}
 	};
 
+	const handleClose = () => {
+		setIsDropdownOpen(false);
+	};
+
+	// TODO: impl edit card
 	const handleEditCard = () => {};
+
+	const handleColorChange = (pickedColor: string) => {
+		dispatch(updateCardColor({ updatedColor: pickedColor, cardId }));
+	};
 
 	const handleDeleteCard = () => {
 		dispatch(removeCard(listId, cardId));
@@ -122,17 +138,20 @@ const KanbanCard = ({ index, listId, cardId, title }: KanbanCardProps) => {
 														<FaChevronLeft size={11} />
 													</ActionsContainer>
 													<span>{menuStack[menuStack.length - 1]}</span>
+													<ActionsContainer onClick={handleClose}>
+														<IoMdClose size={16} />
+													</ActionsContainer>
 												</DropdownSubMenuCategoryHeader>
 												<hr />
-												{/* {menuStack[menuStack.length - 1] === "Choose List Color" && (
-														<ColorPicker onColorChange={handleColorChange} currentColor={color} />
-													)} */}
+												{menuStack[menuStack.length - 1] === "Card Label" && (
+													<ColorPicker onColorChange={handleColorChange} currentColor={color} />
+												)}
 											</>
 										)}
 									</DropdownMenu>
 								)}
 							</MenuContainer>
-							<Card>
+							<Card color={color}>
 								<CardContent>
 									<p>{title}</p>
 								</CardContent>

@@ -1,23 +1,23 @@
 import React, { useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import TextArea from "react-textarea-autosize";
-import { Button, ButtonContainer } from "../../common/Button";
+import { Button, ButtonContainer } from "../../common/buttons/Button";
 import { MdClose } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
 import { createCard } from "../../../redux/slices/kanban/cards";
+import { useAppDispatch } from "../../../redux/store";
 
 interface CreateCardProps {
 	listId: string;
 }
 
 const CreateCard = ({ listId }: CreateCardProps) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const newCardFormRef = useRef(null);
 	const [isFormOpen, setFormOpen] = useState(false);
 	const [cardTitle, setCardTitle] = useState("");
 
-	const handleFocus = (e) => e.target.select();
+	const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => e.target.select();
 
 	const handleOpenForm = () => {
 		setFormOpen(true);

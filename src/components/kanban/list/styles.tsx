@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ButtonContainer } from "../../common/Button";
+import { ButtonContainer } from "../../common/buttons/Button";
 import TextArea from "react-textarea-autosize";
 
 export const ListContainer = styled.div`
@@ -26,30 +26,6 @@ export const ListCardsContainer = styled.div`
 	margin: 0 10px;
 `;
 
-export const ActionsContainer = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 36px;
-	height: 36px;
-	border-radius: 10px;
-	cursor: pointer;
-
-	> svg {
-		color: #a9a9a9;
-	}
-
-	&:hover {
-		background-color: rgba(0, 0, 0, 0.08);
-		> svg {
-			color: #797979;
-		}
-	}
-	&:active {
-		background-color: rgba(0, 0, 0, 0.15);
-	}
-`;
-
 export const TitleContainer = styled.div`
 	width: 100%;
 	height: 100%;
@@ -58,10 +34,6 @@ export const TitleContainer = styled.div`
 	align-items: center;
 	cursor: pointer;
 	padding: 1rem;
-`;
-
-export const MenuContainer = styled.div`
-	position: relative;
 `;
 
 export const StyledInput = styled.input`

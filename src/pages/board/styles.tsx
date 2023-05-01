@@ -1,11 +1,15 @@
 import styled from "styled-components";
 
-export const BoardContainer = styled.div`
+interface BoardContainerStyleProps {
+	image: string;
+}
+
+export const BoardContainer = styled.div<BoardContainerStyleProps>`
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
-	padding-bottom: 5rem;
+	padding-bottom: 6.5rem;
 
 	/* Add background image */
 	background: ${({ image }) => (image ? `url(${image})` : "none")} no-repeat center center fixed;

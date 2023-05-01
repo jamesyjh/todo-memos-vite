@@ -1,14 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
+import Draft, { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw, ContentBlock, Modifier } from "draft-js";
 import Toolbar from "./toolbar";
 import "./editor.css";
 
-const DraftEditor = ({ currContentState, captureEditorState }) => {
+interface DraftEditorProps {
+	currContentState: Draft.RawDraftContentState;
+	captureEditorState: (editorState: Draft.EditorState) => void;
+}
+
+const DraftEditor = ({ currContentState, captureEditorState }: DraftEditorProps) => {
 	const [editorState, setEditorState] = useState(() => {
 		if (currContentState) return EditorState.createWithContent(convertFromRaw(currContentState));
 		return EditorState.createEmpty();
 	});
-	const editor = useRef(null);
+	const editorRef = useRef<Editor>(null);
 
 	useEffect(() => {
 		focusEditor();
@@ -19,10 +24,10 @@ const DraftEditor = ({ currContentState, captureEditorState }) => {
 	}, [editorState]);
 
 	const focusEditor = () => {
-		editor.current.focus();
+		editorRef.current?.focus();
 	};
 
-	const handleKeyCommand = (command) => {
+	const handleKeyCommand = (command: string) => {
 		const newState = RichUtils.handleKeyCommand(editorState, command);
 		if (newState) {
 			setEditorState(newState);
@@ -75,7 +80,7 @@ const DraftEditor = ({ currContentState, captureEditorState }) => {
 	};
 
 	// FOR BLOCK LEVEL STYLES(Returns CSS Class From editor.css)
-	const myBlockStyleFn = (contentBlock) => {
+	const myBlockStyleFn = (contentBlock: ContentBlock): string => {
 		const type = contentBlock.getType();
 		switch (type) {
 			case "blockQuote":
@@ -91,6 +96,7 @@ const DraftEditor = ({ currContentState, captureEditorState }) => {
 			default:
 				break;
 		}
+		return "unhandled-type";
 	};
 
 	return (
@@ -98,11 +104,14 @@ const DraftEditor = ({ currContentState, captureEditorState }) => {
 			<Toolbar editorState={editorState} setEditorState={setEditorState} />
 			<div className="editor-container">
 				<Editor
-					ref={editor}
+					ref={editorRef}
 					placeholder="Write your memo here..."
-					handleKeyCommand={handleKeyCommand}
+					handleKeyCommand={(command) => {
+						handleKeyCommand(command);
+						return "not-handled";
+					}}
 					editorState={editorState}
-					customStyleMap={styleMap}
+					customStyleMap={styleMap as any}
 					blockStyleFn={myBlockStyleFn}
 					onChange={setEditorState}
 				/>

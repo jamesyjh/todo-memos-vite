@@ -1,15 +1,16 @@
-import { useSelector } from "react-redux";
 import Boards from "../../components/dashboard/Boards";
 import Memos from "../../components/dashboard/Memos";
+import Header from "../../components/header";
 import TabMenu from "../../components/navigation/TabMenu";
-import { RootState } from "../../redux/store";
+import { RootState, useAppSelector } from "../../redux/store";
 import { ContentContainer, DashboardContainer } from "./styles";
 
 const Dashboard = () => {
-	const { activeLink } = useSelector((state: RootState) => state.app.nav);
+	const { activeLink } = useAppSelector((state) => state.app.nav);
 
 	return (
 		<DashboardContainer>
+			<Header />
 			<TabMenu />
 			<ContentContainer>{activeLink === "boards" ? <Boards /> : <Memos />}</ContentContainer>
 		</DashboardContainer>

@@ -2,25 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import KanbanCard from "../card";
 import {
-	ActionsContainer,
 	FormContainer,
 	ListCardsContainer,
 	ListContainer,
 	ListForm,
 	ListTitle,
-	MenuContainer,
 	StyledInput,
 	TitleContainer,
 } from "./styles";
 import CreateCard from "../card/createCard";
-import ColorPicker from "./colorMenu";
-import { useDispatch } from "react-redux";
-import { IoMdSettings } from "react-icons/io";
-import { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/DropdownMenu";
-import DropdownMenuItem from "../../common/DropdownMenuItem";
-import DropdownMenu from "../../common/DropdownMenu";
+import ColorPicker from "../../menus/cardColorSettings";
+import { IoMdClose, IoMdSettings } from "react-icons/io";
+import { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/dropdown-menu";
+import DropdownMenuItem from "../../common/dropdown-menu/menuItem";
+import DropdownMenu from "../../common/dropdown-menu";
 import { FaChevronLeft } from "react-icons/fa";
 import { removeList, setListColor, updateListTitle } from "../../../redux/slices/kanban/lists";
+import { MenuContainer } from "../../common/dropdown-menu/styles";
+import { ActionsContainer } from "../../common/ActionsContainer";
+import { useAppDispatch } from "../../../redux/store";
 
 interface KanbanListProps {
 	listId: string;
@@ -32,14 +32,14 @@ interface KanbanListProps {
 }
 
 const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanListProps) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const menuRef = useRef<HTMLDivElement>(null);
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [listTitle, setListTitle] = useState(title);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [menuStack, setMenuStack] = useState<string[]>([]);
 
-	const handleFinishEditing = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleFinishEditing = (e: React.FocusEvent<HTMLInputElement> | React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		dispatch(updateListTitle({ listId, listTitle }));
 		setIsEditing(false);
@@ -73,6 +73,10 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
 
 	const handleRemoveList = () => {
 		dispatch(removeList(listId));
+		setIsDropdownOpen(false);
+	};
+
+	const handleClose = () => {
 		setIsDropdownOpen(false);
 	};
 
@@ -139,6 +143,9 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
 																	<FaChevronLeft size={11} />
 																</ActionsContainer>
 																<span>{menuStack[menuStack.length - 1]}</span>
+																<ActionsContainer onClick={handleClose}>
+																	<IoMdClose size={16} />
+																</ActionsContainer>
 															</DropdownSubMenuCategoryHeader>
 															<hr />
 															{menuStack[menuStack.length - 1] === "Choose List Color" && (
@@ -153,13 +160,14 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
 								)}
 
 								<ListCardsContainer {...provided.droppableProps} ref={provided.innerRef}>
-									{listCards.map((cardId, index) => (
+									{listCards.map((cardId: string, index: number) => (
 										<KanbanCard
 											key={cardId}
 											listId={listId}
 											cardId={cardId}
 											title={cards[cardId].title}
 											index={index}
+											color={cards[cardId].color}
 										/>
 									))}
 									{provided.placeholder}

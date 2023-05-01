@@ -1,28 +1,27 @@
 import * as R from "ramda";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { Navigate, useParams } from "react-router-dom";
 import { setActiveBoard } from "../../redux/slices/kanban/boards";
-import { RootState } from "../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
 import KanbanBoard from "../../components/kanban/board";
 import { BoardContainer } from "./styles";
 
 const MyBoard = () => {
 	const { id } = useParams();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const { boards: allBoards, cards: allCards, lists: allLists } = useSelector((state: RootState) => state);
+	const { boards: allBoards, cards: allCards, lists: allLists } = useAppSelector((state) => state);
 	const { boards } = allBoards;
 	const { lists } = allLists;
 	const { cards } = allCards;
 
 	useEffect(() => {
+		if (!id || R.isNil(boards[id])) return;
 		dispatch(setActiveBoard({ boardId: id }));
 	}, [id]);
 
 	if (!id || R.isNil(boards[id])) {
-		return <Navigate replace to="/boards" />;
+		return <Navigate replace to="/" />;
 	}
 
 	const board = boards[id];

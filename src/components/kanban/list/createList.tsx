@@ -1,19 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import React, { useRef, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { Button, ButtonContainer } from "../../common/Button";
+import { Button } from "../../common/buttons/Button";
 import { MdClose } from "react-icons/md";
-import { useDispatch } from "react-redux";
 import { createList } from "../../../redux/slices/kanban/lists";
 import { CreateListContainer, FormContainer, NewListActionContainer, NewListForm, StyledTextArea } from "./styles";
+import { useAppDispatch } from "../../../redux/store";
 
 const CreateList = () => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const newListFormRef = useRef(null);
 	const [isFormOpen, setFormOpen] = useState(false);
 	const [listText, setListText] = useState("");
 
-	const handleFocus = (e) => e.target.select();
+	const handleFocus = (e: React.FormEvent<HTMLTextAreaElement>) => {
+		const target = e.target as HTMLTextAreaElement;
+		target.select();
+	};
 
 	const handleOpenForm = () => {
 		setFormOpen(true);

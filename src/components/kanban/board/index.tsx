@@ -3,22 +3,32 @@ import KanbanList from "../list";
 import CreateList from "../list/createList";
 import { BoardActionsContainer, ListsContainer } from "./styles";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import { rearrange, updateBoardImage } from "../../../redux/slices/kanban/boards";
-import { Button, ButtonContainer } from "../../common/Button";
+import { Button, ButtonContainer } from "../../common/buttons/Button";
 import { FaChevronLeft } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import { CgMoreVerticalAlt } from "react-icons/cg";
-import { ActionsContainer, MenuContainer } from "../list/styles";
-import { useRef, useState } from "react";
-import DropdownMenu, { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/DropdownMenu";
-import DropdownMenuItem from "../../common/DropdownMenuItem";
+import { useEffect, useRef, useState } from "react";
+import DropdownMenu, { DropdownMenuCategoryHeader, DropdownSubMenuCategoryHeader } from "../../common/dropdown-menu";
+import DropdownMenuItem from "../../common/dropdown-menu/menuItem";
 
-import ImagePicker from "./imageMenu";
+import ImagePicker from "../../menus/boardImageSettings";
+import { MenuContainer } from "../../common/dropdown-menu/styles";
+import { ActionsContainer } from "../../common/ActionsContainer";
+import { useAppDispatch } from "../../../redux/store";
 
-const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
+interface KanbanBoardProps {
+	boardId: string;
+	listOrder: [];
+	board: any;
+	lists: any;
+	cards: any;
+}
+
+const KanbanBoard = ({ board, boardId, listOrder, lists, cards }: KanbanBoardProps) => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -31,17 +41,22 @@ const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
 			return;
 		}
 
-		dispatch(
-			rearrange({
-				boardId,
-				droppableIdStart: source.droppableId,
-				droppableIdEnd: destination.droppableId,
-				droppableIndexStart: source.index,
-				droppableIndexEnd: destination.index,
-				draggableId,
-				type,
-			})
-		);
+		const dragAction = rearrange({
+			boardId,
+			droppableIdStart: source.droppableId,
+			droppableIdEnd: destination.droppableId,
+			droppableIndexStart: source.index,
+			droppableIndexEnd: destination.index,
+			draggableId,
+			type,
+		});
+
+		dispatch(dragAction as any);
+	};
+
+	const handleImageChange = (imageURL: string) => {
+		console.log(imageURL);
+		dispatch(updateBoardImage({ boardId, imageURL }));
 	};
 
 	const handleMenuNav = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, subMenuTitle: string): void => {
@@ -54,16 +69,26 @@ const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
 		setMenuStack((prev) => prev.slice(0, -1));
 	};
 
-	const handleOpenBoardActions = (e) => {
+	const handleOpenBoardActions = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		e.stopPropagation();
 		setIsDropdownOpen(true);
 		setMenuStack([]);
 	};
 
-	const handleImageChange = (imageURL: string) => {
-		console.log(imageURL);
-		dispatch(updateBoardImage({ boardId, imageURL }));
+	const handleClose = () => {
+		setIsDropdownOpen(false);
 	};
+
+	const handleOutsideClick = (e: MouseEvent) => {
+		if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+			setIsDropdownOpen(false);
+		}
+	};
+
+	useEffect(() => {
+		document.addEventListener("click", handleOutsideClick);
+		return () => document.removeEventListener("click", handleOutsideClick);
+	}, []);
 
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>
@@ -98,6 +123,9 @@ const KanbanBoard = ({ board, boardId, listOrder, lists, cards }) => {
 										<FaChevronLeft size={11} />
 									</ActionsContainer>
 									<span>{menuStack[menuStack.length - 1]}</span>
+									<ActionsContainer onClick={handleClose}>
+										<IoMdClose size={16} />
+									</ActionsContainer>
 								</DropdownSubMenuCategoryHeader>
 								<hr />
 								{menuStack[menuStack.length - 1] === "Background Image" && (
@@ -154,7 +182,6 @@ const BoardHeader = styled.header`
 	padding: 0.75rem;
 	gap: 1rem;
 	backdrop-filter: blur(5px); /* Add background blur effect */
-	/* opacity: 0.1; */
 	color: #fefefe;
 	justify-content: space-between;
 
