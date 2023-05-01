@@ -1,21 +1,63 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  nav: {
-    activeLink: "boards",
-  },
+	nav: {
+		activeLink: "boards",
+	},
+	themes: {
+		"default-dark": {
+			name: "Default Dark",
+			type: "preset",
+			background: {
+				color: "#222",
+			},
+		},
+		"default-light": {
+			name: "Default Light",
+			type: "preset",
+			background: {
+				color: "linear-gradient(109.6deg, rgb(245, 239, 249) 30.1%, rgb(207, 211, 236) 100.2%)",
+			},
+		},
+		rainforest: {
+			name: "Rainforest",
+			type: "preset",
+			background: {
+				url: "https://images.pexels.com/photos/1072179/pexels-photo-1072179.jpeg",
+			},
+		},
+		mountain: {
+			name: "Mountains",
+			type: "preset",
+			background: {
+				url: "https://images.pexels.com/photos/2529973/pexels-photo-2529973.jpeg",
+			},
+		},
+		stones: {
+			name: "Stones",
+			type: "preset",
+			background: {
+				url: "https://images.pexels.com/photos/1029604/pexels-photo-1029604.jpeg",
+			},
+		},
+	},
+	activeTheme: "default-light",
 };
 
 export const slice = createSlice({
-  name: "app",
-  initialState,
-  reducers: {
-    setNavPage: (state, action) => {
-      state.nav.activeLink = action.payload;
-    },
-  },
+	name: "app",
+	initialState,
+	reducers: {
+		setNavPage: (state, action) => {
+			state.nav.activeLink = action.payload;
+		},
+		updateAppTheme: (state, action) => {
+			const { themeId } = action.payload;
+			state.activeTheme = themeId;
+		},
+	},
 });
 
-export const { setNavPage } = slice.actions;
+export const { setNavPage, updateAppTheme } = slice.actions;
 
 export default slice.reducer;

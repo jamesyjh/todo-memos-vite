@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import { RefObject } from "react";
 import styled from "styled-components";
-import { colorMap } from "../../utils";
+import { colorMap, ColorMapKey } from "../../utils";
 
-const ExpandingMenu = ({ handleColorSelect }) => {
+interface ExpandingMenuProps {
+	menuRef?: RefObject<HTMLDivElement>;
+	handleColorSelect: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: ColorMapKey) => void;
+}
+
+const ExpandingMenu = ({ menuRef, handleColorSelect }: ExpandingMenuProps) => {
 	return (
-		<Menu className="expanding-menu">
+		<Menu ref={menuRef} className="expanding-menu">
 			{Object.keys(colorMap).map((key) => {
 				return (
 					<MenuItem
 						key={key}
-						onClick={() => handleColorSelect(key)}
+						onClick={(e) => handleColorSelect(e, key as ColorMapKey)}
 						style={{
 							border: `1px solid black`,
-							background: `${colorMap[key]}`,
+							background: `${colorMap[key as ColorMapKey]}`,
 						}}
 					></MenuItem>
 				);
@@ -25,14 +30,15 @@ export default ExpandingMenu;
 
 const Menu = styled.div`
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	gap: 5px;
 	position: absolute;
-	right: 0px;
-	top: 50px;
+	right: -35px;
+	top: 0px;
+	z-index: 9999;
 `;
 
-const MenuItem = styled.span`
+const MenuItem = styled.div`
 	border: 2px solid black;
 	border-radius: 100%;
 	min-width: 30px;
