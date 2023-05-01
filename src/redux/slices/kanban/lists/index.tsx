@@ -1,19 +1,15 @@
 import * as R from "ramda";
 import uuid from "short-uuid";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../../store";
 import { addListToBoard, removeListFromBoard } from "../boards";
+import { CardRearrangePayload, ListsState } from "./types";
 
-const initialState = {
-	lists: {
-		"list-0": {
-			cards: ["card-0", "card-1"],
-			title: "Default List",
-			board: "board-0",
-			color: "#DFE3E6",
-		},
-	},
+const initialState: ListsState = {
+	lists: {},
 };
+
+const defaultColor = "#DFE3E6";
 
 export const slice = createSlice({
 	name: "lists",
@@ -39,7 +35,7 @@ export const slice = createSlice({
 			const updatedCards = list.cards.filter((id) => id !== cardId);
 			list.cards = updatedCards;
 		},
-		sortCards: (state, action) => {
+		sortCards: (state, action: PayloadAction<CardRearrangePayload>) => {
 			const { droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd } = action.payload;
 			// same list
 			if (droppableIdStart === droppableIdEnd) {
@@ -52,7 +48,7 @@ export const slice = createSlice({
 				const card = startList.cards.splice(droppableIndexStart, 1);
 				const endList = state.lists[droppableIdEnd];
 				endList.cards.splice(droppableIndexEnd, 0, ...card);
-				state.lists = R.mergeDeepRight(state.lists, { [droppableIdStart]: startList }, { [droppableIdEnd]: endList });
+				state.lists = R.mergeDeepRight(state.lists, { [droppableIdStart]: startList, [droppableIdEnd]: endList });
 			}
 		},
 		setListColor: (state, action) => {
@@ -74,7 +70,6 @@ export default slice.reducer;
 export const createList = (title: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
 	const activeBoard = getState().boards.active;
 	const id = `l-${uuid.generate()}`;
-	const defaultColor = "#DFE3E6";
 	const newList = {
 		[id]: {
 			title,

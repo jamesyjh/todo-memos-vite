@@ -1,27 +1,13 @@
 import * as R from "ramda";
-import { AnyAction, createSlice } from "@reduxjs/toolkit";
+import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import uuid from "short-uuid";
 import { AppDispatch, RootState } from "../../../store";
 import { sortCards } from "../lists";
+import { Boards, BoardsState, RearrangePayload } from "./types";
 
-const initialState = {
-	boards: {
-		"board-0": {
-			lists: ["list-0"],
-			name: "Default Board",
-			image: "https://loremflickr.com/640/360",
-		},
-		"board-1": {
-			lists: ["list-1"],
-			name: "Board 2",
-			image: "https://loremflickr.com/720/400",
-		},
-		"board-2": {
-			lists: ["list-2"],
-			name: "Board 2",
-			image: "https://loremflickr.com/820/400",
-		},
-	},
+const initialState: BoardsState = {
+	boards: {} as Boards,
+	favorites: [],
 	editing: "",
 	active: "",
 };
@@ -30,60 +16,71 @@ export const slice = createSlice({
 	name: "boards",
 	initialState,
 	reducers: {
-		setActiveBoard: (state, action) => {
+		setActiveBoard: (state, action: PayloadAction<{ boardId: string }>) => {
 			const { boardId } = action.payload;
 			state.active = boardId;
 		},
-		createBoard: (state) => {
+		createBoard: (state, action: PayloadAction<void>) => {
 			const id = `b-${uuid.generate()}`;
-			//TODO: handle switch to edit mode here
 			state.editing = id;
 			const newBoard = {
 				[id]: {
 					name: "Untitled Board",
 					lists: [],
-					image: `https://loremflickr.com/${Math.floor(Math.random() * 901) + 100}/${
-						Math.floor(Math.random() * 901) + 100
-					}`,
+					image: "https://images.pexels.com/photos/3069334/pexels-photo-3069334.jpeg",
 				},
 			};
 
 			state.boards = R.mergeRight(state.boards, newBoard);
 		},
-		removeBoard: (state = initialState, action: AnyAction) => {
+		removeBoard: (state = initialState, action: PayloadAction<{ boardId: string }>) => {
 			const { boardId } = action.payload;
 			if (boardId in state.boards) {
+				const currentFavorites = state.favorites;
+				const updatedFavorites = currentFavorites.filter((id) => id !== boardId);
+				state.favorites = updatedFavorites;
+
 				delete state.boards[boardId];
 			}
 		},
-		addListToBoard: (state, action) => {
+		addListToBoard: (state, action: PayloadAction<{ boardId: string; listId: string }>) => {
 			const { boardId, listId } = action.payload;
 			const board = state.boards[boardId];
 			const updatedLists = R.concat(board.lists, [listId]);
 			board.lists = updatedLists;
 		},
-		removeListFromBoard: (state, action) => {
+		removeListFromBoard: (state, action: PayloadAction<{ boardId: string; listId: string }>) => {
 			const { boardId, listId } = action.payload;
 			const board = state.boards[boardId];
 			const updatedLists = board.lists.filter((id) => id !== listId);
 			board.lists = updatedLists;
 		},
-		updateBoard: (state, action) => {
+		updateBoard: (state, action: PayloadAction<{ boardId: string; updatedName: string }>) => {
 			const { boardId, updatedName } = action.payload;
 			state.boards[boardId].name = updatedName;
 			state.editing = "";
 		},
-		setEditing: (state, action) => {
+		setEditing: (state, action: PayloadAction<{ boardId: string }>) => {
 			const { boardId } = action.payload;
 			state.editing = boardId;
 		},
-		updateBoardImage: (state, action) => {
+		updateBoardImage: (state, action: PayloadAction<{ boardId: string; imageURL: string }>) => {
 			const { boardId, imageURL } = action.payload;
 			const board = state.boards[boardId];
 			board.image = imageURL;
 		},
-		sortList: (state, action) => {
-			const { boardId, type, droppableIndexStart, droppableIndexEnd } = action.payload;
+		updateFavorites: (state, action: PayloadAction<{ boardId: string }>) => {
+			const { boardId } = action.payload;
+			const currentFavorites = state.favorites;
+			if (currentFavorites.includes(boardId)) {
+				const updatedFavorites = currentFavorites.filter((id) => id !== boardId);
+				state.favorites = updatedFavorites;
+			} else {
+				state.favorites = [...state.favorites, boardId];
+			}
+		},
+		sortList: (state, action: PayloadAction<RearrangePayload>) => {
+			const { boardId, droppableIndexStart, droppableIndexEnd } = action.payload;
 			const board = state.boards[boardId];
 			const lists = board.lists;
 
@@ -103,23 +100,22 @@ export const {
 	addListToBoard,
 	removeListFromBoard,
 	updateBoard,
+	updateBoardImage,
 	setEditing,
 	sortList,
-	updateBoardImage,
+	updateFavorites,
 } = slice.actions;
 
 export default slice.reducer;
 
 export const rearrange =
-	({ boardId, droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId, type }) =>
-	async (dispatch: AppDispatch, getState: () => RootState) => {
+	(rearrangePayload: RearrangePayload) => async (dispatch: AppDispatch, getState: () => RootState) => {
+		const { type } = rearrangePayload;
 		if (type === "list") {
-			dispatch(slice.actions.sortList({ boardId, type, droppableIndexStart, droppableIndexEnd }));
+			dispatch(slice.actions.sortList(rearrangePayload));
 		}
 
 		if (type === "card") {
-			dispatch(
-				sortCards({ droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd, draggableId, type })
-			);
+			dispatch(sortCards(rearrangePayload));
 		}
 	};
