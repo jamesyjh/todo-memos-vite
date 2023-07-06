@@ -6,15 +6,15 @@ import { RootState, useAppSelector } from "../../redux/store";
 import { ContentContainer, DashboardContainer } from "./styles";
 
 const Dashboard = () => {
-	const { activeLink } = useAppSelector((state) => state.app.nav);
+  const { activeLink } = useAppSelector((state) => state.app.nav);
 
-	return (
-		<DashboardContainer>
-			<Header />
-			<TabMenu />
-			<ContentContainer>{activeLink === "boards" ? <Boards /> : <Memos />}</ContentContainer>
-		</DashboardContainer>
-	);
+  return (
+    <DashboardContainer>
+      <Header />
+      <TabMenu />
+      <ContentContainer>{activeLink === "boards" ? <Boards /> : <Memos />}</ContentContainer>
+    </DashboardContainer>
+  );
 };
 
 export default Dashboard;
