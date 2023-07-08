@@ -15,7 +15,6 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/boards/:id" element={<Board />} />
-        <Route path="/memos/:id" element={<Memo />} />
         <Route path="/not-found" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

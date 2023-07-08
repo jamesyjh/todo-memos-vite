@@ -4,84 +4,90 @@ import { TbNewSection, TbStarOff } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { createBoard } from "../../redux/slices/kanban/boards";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { Button, ButtonContainer } from "../common/buttons/Button";
-import Icon from "../common/Icon";
-import { SectionContainer, ThumbnailGrid, SectionHeader, PlaceholderContainer } from "./styles";
+import BasicButton from "../common/buttons/basic-button";
+import { ButtonContainer } from "../common/buttons/Button";
 import Thumbnail from "./Thumbnail";
 
 interface ThumbnailPlaceholderProps {
-	showFavorites: boolean;
-	hasFavorites: boolean;
-	hasBoards: boolean;
+  showFavorites: boolean;
+  hasFavorites: boolean;
+  hasBoards: boolean;
 }
 
 const Boards = () => {
-	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
-	const { boards, favorites } = useAppSelector((state) => state.boards);
-	const [showFavorites, setShowFavorites] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { boards, favorites } = useAppSelector((state) => state.boards);
+  const [showFavorites, setShowFavorites] = useState<boolean>(false);
 
-	const handleAddMemo = () => {
-		dispatch(createBoard());
-	};
+  const handleCreateBoard = () => {
+    dispatch(createBoard());
+  };
 
-	const handleViewFavoriteBoards = () => {
-		setShowFavorites((prev) => !prev);
-	};
+  const handleViewFavoriteBoards = () => {
+    setShowFavorites((prev) => !prev);
+  };
 
-	return (
-		<SectionContainer>
-			<SectionHeader>
-				<ButtonContainer>
-					<Button onClick={handleAddMemo}>
-						<Icon element={<TbNewSection size={25} />} />
-					</Button>
-					<Button onClick={handleViewFavoriteBoards}>
-						<Icon element={<FaStar size={25} color={showFavorites ? "#ffce0c" : "#222"} />} />
-					</Button>
-				</ButtonContainer>
-			</SectionHeader>
-			<ThumbnailGrid>
-				{Object.keys(boards)
-					.filter((key) => (showFavorites ? favorites.includes(key) : key))
-					.map((key) => {
-						return (
-							<div key={key} onClick={() => navigate(`/boards/${key}`)}>
-								<Thumbnail key={key} id={key} {...boards[key]} isStarred={favorites.includes(key)} />
-							</div>
-						);
-					})}
-			</ThumbnailGrid>
-			<ThumbnailPlaceholder
-				showFavorites={showFavorites}
-				hasFavorites={favorites.length > 0}
-				hasBoards={Object.keys(boards).length > 0}
-			/>
-		</SectionContainer>
-	);
+  return (
+    <div className="flex relative flex-col flex-wrap justify-center items-center">
+      <div className="flex flex-col gap-2 my-4">
+        <ButtonContainer>
+          <BasicButton onClick={handleCreateBoard}>
+            <TbNewSection size={20} />
+            <span>Add Board</span>
+          </BasicButton>
+          <BasicButton onClick={handleViewFavoriteBoards}>
+            <FaStar size={20} color={showFavorites ? "#ffce0c" : "#ccc"} />
+            <span>View Favorites</span>
+          </BasicButton>
+        </ButtonContainer>
+      </div>
+      <div className="grid grid-cols-1 gap-5 mb-8 md:grid-cols-2 lg:grid-cols-3">
+        {Object.keys(boards)
+          .filter((key) => (showFavorites ? favorites.includes(key) : key))
+          .map((key) => {
+            return (
+              <div key={key} onClick={() => navigate(`/boards/${key}`)}>
+                <Thumbnail key={key} id={key} {...boards[key]} isStarred={favorites.includes(key)} />
+              </div>
+            );
+          })}
+      </div>
+      {Object.keys(boards).length < 1 && (
+        <ThumbnailPlaceholder
+          showFavorites={showFavorites}
+          hasFavorites={favorites.length > 0}
+          hasBoards={Object.keys(boards).length > 0}
+        />
+      )}
+    </div>
+  );
 };
 
 export default Boards;
 
 const ThumbnailPlaceholder = ({ showFavorites, hasFavorites, hasBoards }: ThumbnailPlaceholderProps) => {
-	return (
-		<>
-			{showFavorites && !hasFavorites ? (
-				<PlaceholderContainer>
-					<TbStarOff size={40} />
-					<h3>No favorite boards.</h3>
-				</PlaceholderContainer>
-			) : (
-				!hasBoards && (
-					<PlaceholderContainer>
-						<h1>No boards yet!</h1>
-						<br />
-						<h3>
-							Click <TbNewSection size={25} /> to create one!
-						</h3>
-					</PlaceholderContainer>
-				)
-			)}
-		</>
-	);
+  return (
+    <>
+      <div className="text-white p-7 rounded-lg bg-black bg-opacity-[40%] ">
+        {showFavorites && !hasFavorites ? (
+          <>
+            <span className="flex flex-col items-center">
+              <TbStarOff size={50} />
+              <span className="font-light text-2xl">No favorite boards.</span>
+            </span>
+          </>
+        ) : (
+          !hasBoards && (
+            <>
+              <span className="font-semibold text-2xl">No boards yet!</span>
+              <span className="flex items-center font-normal text-xl pt-5 my-5 gap-2">
+                Click <TbNewSection size={30} /> to create one!
+              </span>
+            </>
+          )
+        )}
+      </div>
+    </>
+  );
 };
