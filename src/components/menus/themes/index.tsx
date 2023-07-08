@@ -1,4 +1,4 @@
 import CustomThemeSettings from "./customTheme";
-import PresetThemeSettings from "./presetTheme";
+import PresetThemeSettings from "./dashboardPresetTheme";
 
 export { CustomThemeSettings, PresetThemeSettings };

@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import "./global.css";
 
 // pages
 import Dashboard from "./pages/dashboard";
@@ -11,15 +10,14 @@ import NotFound from "./pages/not-found";
 import Layout from "./layout";
 
 export const App = () => {
-	return (
-		<Layout>
-			<Routes>
-				<Route path="/" element={<Dashboard />} />
-				<Route path="/boards/:id" element={<Board />} />
-				<Route path="/memos/:id" element={<Memo />} />
-				<Route path="/not-found" element={<NotFound />} />
-				<Route path="*" element={<Navigate to="/" />} />
-			</Routes>
-		</Layout>
-	);
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/boards/:id" element={<Board />} />
+        <Route path="/not-found" element={<NotFound />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Layout>
+  );
 };
