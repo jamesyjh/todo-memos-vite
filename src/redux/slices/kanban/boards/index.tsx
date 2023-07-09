@@ -90,6 +90,9 @@ export const slice = createSlice({
 
       state.boards = R.mergeDeepRight(state.boards, { [boardId]: board });
     },
+    resetBoardState: (state) => {
+      state = initialState;
+    },
   },
 });
 
@@ -104,6 +107,7 @@ export const {
   setEditing,
   sortList,
   updateFavorites,
+  resetBoardState,
 } = slice.actions;
 
 export default slice.reducer;

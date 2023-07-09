@@ -12,7 +12,7 @@ export const DashboardContainer = styled.div`
     position: absolute;
     top: 0;
     width: 100%;
-    height: 30px;
+    height: 35px;
     background-color: rgba(0, 0, 0, 0.18);
   }
 `;

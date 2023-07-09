@@ -143,8 +143,8 @@ const KanbanCard = ({ index, listId, cardId, title, color }: KanbanCardProps) =>
                         <DropdownMenuItem handleClick={handleDeleteCard} requiresConfirmation>
                           Delete card
                         </DropdownMenuItem>
-                        <DropdownMenuItem handleClick={(e) => handleMenuNav(e, "Card Label")}>
-                          Set label
+                        <DropdownMenuItem handleClick={(e) => handleMenuNav(e, "Card Color")}>
+                          Set color . . .
                         </DropdownMenuItem>
                       </>
                     ) : (
@@ -159,7 +159,7 @@ const KanbanCard = ({ index, listId, cardId, title, color }: KanbanCardProps) =>
                           </ActionsContainer>
                         </DropdownSubMenuCategoryHeader>
                         <hr />
-                        {menuStack[menuStack.length - 1] === "Card Label" && (
+                        {menuStack[menuStack.length - 1] === "Card Color" && (
                           <ColorPicker onColorChange={handleColorChange} currentColor={color} />
                         )}
                       </>

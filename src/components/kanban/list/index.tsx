@@ -136,10 +136,10 @@ const KanbanList = ({ cards, listId, title, listCards, index, color }: KanbanLis
                               </DropdownMenuCategoryHeader>
                               <hr />
                               <DropdownMenuItem handleClick={handleRemoveList} requiresConfirmation>
-                                Remove List
+                                Delete list
                               </DropdownMenuItem>
                               <DropdownMenuItem handleClick={(e) => handleMenuNav(e, "Choose List Color")}>
-                                Set Color
+                                Set color . . .
                               </DropdownMenuItem>
                             </>
                           ) : (

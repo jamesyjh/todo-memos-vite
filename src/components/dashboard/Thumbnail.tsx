@@ -37,6 +37,9 @@ const Thumbnail = ({ id, name, image, isStarred }: ThumbnailProps) => {
   }, [inputRef, newThumbnailRef]);
 
   const handleDeleteBoard = (): void => {
+    if (isEditing) {
+      dispatch(setEditing({ boardId: "" }));
+    }
     dispatch(removeBoard({ boardId: id } as any));
   };
 
@@ -68,7 +71,7 @@ const Thumbnail = ({ id, name, image, isStarred }: ThumbnailProps) => {
 
   return (
     <ThumbnailContainer
-      className="w-[80vw] h-[20vh] sm:w-[65vw]"
+      className="w-[80vw] h-[150px] sm:h-[20vh] sm:w-[65vw]"
       isEditing={isEditing}
       image={image}
       onClick={handleInputFocus}

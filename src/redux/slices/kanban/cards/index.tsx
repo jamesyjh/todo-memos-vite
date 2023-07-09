@@ -32,12 +32,15 @@ export const slice = createSlice({
       const card = state.cards[cardId];
       card.color = updatedColor;
     },
+    resetCardState: (state) => {
+      state = initialState;
+    },
   },
 });
 
 export default slice.reducer;
 
-export const { updateCardTitle, updateCardColor } = slice.actions;
+export const { updateCardTitle, updateCardColor, resetCardState } = slice.actions;
 
 export const createCard = (title: string, listId: string) => (dispatch: AppDispatch) => {
   const id = `c-${uuid.generate()}`;

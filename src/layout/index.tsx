@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Alert from "../components/common/alerts";
 import { useAppSelector } from "../redux/store";
 
 interface LayoutProps {
@@ -16,7 +17,14 @@ interface LayoutContainerStyleProps {
 const Layout = ({ children }: LayoutProps) => {
   const { themes, activeTheme } = useAppSelector((state) => state.app);
 
-  return <LayoutContainer background={themes[activeTheme].background}>{children}</LayoutContainer>;
+  return (
+    <LayoutContainer background={themes[activeTheme].background}>
+      {children}
+      <div className="fixed bottom-3 left-0 right-0 mx-auto max-w-[80vw] sm:max-w-[35vw]">
+        <Alert />
+      </div>
+    </LayoutContainer>
+  );
 };
 
 export default Layout;
