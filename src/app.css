@@ -20,6 +20,12 @@
   --color-background: #f9f8ff;
   --color-accent: #d3fbd8;
 
+  --palette-warning: #ffcc00;
+  --palette-error-1: #cc3300;
+  --palette-error-2: #f6463a;
+  --palette-info: #a9a9a9;
+  --palette-success: #5bc0be;
+
   --palette-1-1: #0b132b;
   --palette-1-2: #1c2541;
   --palette-1-3: #3a506b;

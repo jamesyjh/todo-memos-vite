@@ -1,8 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import LoadingAnimation from "../../../assets/animations/loading";
 
-const StyledButton = styled.button`
-  background-color: var(--palette-5-2);
+interface StyledButtonProps {
+  color?: string;
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
+  background-color: ${({ color }) => (color ? color : "var(--palette-5-2)")};
   border: 1px solid transparent;
   border-radius: 0.6rem;
   box-sizing: border-box;
@@ -22,7 +27,7 @@ const StyledButton = styled.button`
   }
 
   &:hover {
-    background-color: #603bbe;
+    background-color: ${({ color }) => (color ? color : "#603bbe")};
   }
 
   &:focus {
@@ -35,12 +40,24 @@ const StyledButton = styled.button`
 interface BasicButtonProps {
   children: React.ReactNode;
   onClick: () => void;
+  color?: string;
+  size?: "sm" | "md" | "lg" | undefined;
+  showSpinner?: boolean;
 }
 
-const BasicButton = (props: BasicButtonProps) => (
-  <StyledButton onClick={props.onClick} className="flex gap-2 px-3 py-2 text-white text-sm font-normal">
-    {props.children}
-  </StyledButton>
-);
+const BasicButton = (props: BasicButtonProps) => {
+  const className = `flex self-center gap-1 text-white font-normal 
+	${props.size === "sm" ? "px-2.5 py-1.5 text-xs" : ""}
+	${props.size === "md" ? "px-3 py-2 text-sm" : ""}
+	${props.size === "lg" ? "px-3.5 py-2.5 text-md" : ""}
+	${!props.size ? "px-3 py-2 text-sm" : ""}
+	`;
+  return (
+    <StyledButton color={props.color} onClick={props.onClick} className={className}>
+      {props.showSpinner && <LoadingAnimation />}
+      {props.children}
+    </StyledButton>
+  );
+};
 
 export default BasicButton;

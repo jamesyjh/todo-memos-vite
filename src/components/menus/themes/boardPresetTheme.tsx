@@ -6,6 +6,8 @@ import { ActionsContainer } from "../../common/ActionsContainer";
 import { ThemeSettingsContainer } from "./styles";
 import SubmitButton from "../../common/buttons/submitButton";
 import { Themes } from "../../../redux/slices/app/types";
+import { ButtonContainer } from "../../common/buttons/Button";
+import BasicButton from "../../common/buttons/basic-button";
 
 interface ThemeSettingsProps {
   onThemeChange: (theme: any) => void;
@@ -40,7 +42,9 @@ const PresetThemeSettings = ({ onThemeChange, activeTheme, themes }: ThemeSettin
       <PresetThemesContainer>
         <>
           {renderPresetThemeSelection()}
-          <SubmitButton text="Apply" icon={<FaCheckCircle size={20} />} handleOnClick={handleThemeChange} />
+          <ButtonContainer>
+            <BasicButton onClick={handleThemeChange}>Save</BasicButton>
+          </ButtonContainer>
         </>
       </PresetThemesContainer>
     </ThemeSettingsContainer>
