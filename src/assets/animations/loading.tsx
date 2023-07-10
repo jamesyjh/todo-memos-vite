@@ -1,6 +1,4 @@
-import React from "react";
-
-const LoadingAnimation = (props: Props) => {
+const LoadingAnimation = () => {
   return (
     <svg
       aria-hidden="true"
