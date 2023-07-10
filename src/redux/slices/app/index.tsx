@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
 
 const initialState = {
   nav: {

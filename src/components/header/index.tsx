@@ -10,6 +10,7 @@ import DropdownMenuItem from "../common/dropdown-menu/menuItem";
 import { MenuContainer } from "../common/dropdown-menu/styles";
 import ResetAppDataMenu from "../menus/app/resetData";
 import { CustomThemeSettings, PresetThemeSettings } from "../menus/themes";
+import AppInformation from "../about";
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -76,6 +77,8 @@ const Header = () => {
                 <DropdownMenuItem handleClick={(e) => handleMenuNav(e, "Reset App State")}>
                   Reset data and storage . . .
                 </DropdownMenuItem>
+                <hr />
+                <AppInformation />
               </>
             ) : (
               <>

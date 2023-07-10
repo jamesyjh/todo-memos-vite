@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineInfoCircle, AiOutlineWarning } from "react-icons/ai";
 import { MdOutlineErrorOutline } from "react-icons/md";
 import { GiConfirmed } from "react-icons/gi";
-import { useAppSelector } from "../../../redux/store";
+import { useAppDispatch, useAppSelector } from "../../../redux/store";
 import { setAlert } from "../../../redux/slices/app";
 import styled from "styled-components";
 
@@ -13,7 +13,9 @@ type AlertProps = {
 };
 
 const Alert = () => {
+  const dispatch = useAppDispatch();
   const { alert } = useAppSelector((state) => state.app);
+
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const Alert = () => {
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
-        setAlert(undefined);
+        dispatch(setAlert(undefined));
       }, 2000);
     }
   }, [alert.active]);

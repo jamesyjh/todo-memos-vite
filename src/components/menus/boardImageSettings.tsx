@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import styled from "styled-components";
 import { ActionsContainer } from "../common/ActionsContainer";
+import { ButtonContainer } from "../common/buttons/Button";
+import BasicButton from "../common/buttons/basic-button";
 
 interface BoardImageMenuProps {
   onImageChange: (image: string) => void;
@@ -19,14 +21,19 @@ const BoardImageMenu = ({ onImageChange, currentImage }: BoardImageMenuProps) =>
     <BoardImageMenuContainer>
       <ImagePreview imagePreview={imageURL} />
 
-      <label htmlFor="image-url-input">Image URL:</label>
-      <input id="image-url-input" type="text" value={imageURL} onChange={(event) => setImageURL(event.target.value)} />
-      <ActionsContainer onClick={handleImageChange}>
-        <div>
-          <FaCheckCircle size={20} />
-          <span>Apply</span>
-        </div>
-      </ActionsContainer>
+      <label htmlFor="image-url-input">Current Image:</label>
+      <input
+        className="text-xs font-normal"
+        id="image-url-input"
+        type="text"
+        value={imageURL}
+        onChange={(event) => setImageURL(event.target.value)}
+      />
+      <ButtonContainer className="flex justify-end w-[100%]">
+        <BasicButton size="sm" onClick={handleImageChange}>
+          Apply Changes
+        </BasicButton>
+      </ButtonContainer>
     </BoardImageMenuContainer>
   );
 };
